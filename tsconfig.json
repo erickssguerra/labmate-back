@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "dist",
+      "esModuleInterop": true,
+      "baseUrl": "src",
+      "paths": {
+        "@/*": ["*"]
+      },
+      "plugins": [
+        { "transform": "typescript-transform-paths" }
+      ]
+    },
+    "include": [
+        "src",
+        "tests"
+    ]
+}
+  
