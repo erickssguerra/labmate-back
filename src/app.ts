@@ -1,6 +1,7 @@
 import express, { Express, json } from "express";
 import cors from "cors";
 import { loadEnv, connectDb, disconnectDB } from "@/config";
+import { userRouter } from "@/routers";
 
 loadEnv();
 const app = express();
@@ -8,7 +9,8 @@ const app = express();
 app
   .use(json())
   .use(cors())
-  .get("/health", (_req, res) => res.send("OK!"));
+  .get("/health", (_req, res) => res.send("OK!"))
+  .use("/sign-up", userRouter);
 
 export function init(): Promise<Express> {
   connectDb();

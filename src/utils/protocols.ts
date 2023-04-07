@@ -7,3 +7,8 @@ export type CreateUserParams = {
   picture_url: string;
   created_at: Date;
 };
+
+export type ApplicationError = {
+    name: string;
+    message: string;
+  };
