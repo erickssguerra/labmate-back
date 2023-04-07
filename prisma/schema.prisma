@@ -1,15 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model users {
+  id          Int          @id @default(autoincrement())
+  first_name  String
+  second_name String
+  email       String
+  mobile      String       @db.VarChar(20)
+  password    String
+  picture_url String
+  created_at  DateTime?    @default(now()) @db.Timestamp(6)
+  users_labs  users_labs[]
 }
 
-model User {
-  id        Int     @id @default(autoincrement())
-  name      String
-  email     String  @unique
-  createdAt DateTime @default(now())
+model institutions {
+  id      Int    @id @default(autoincrement())
+  name    String
+  acronym String @db.VarChar(15)
+  labs    labs[]
+}
+
+model labs {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(20)
+  institution_id  Int
+  short_name      String            @db.VarChar(8)
+  institutions    institutions      @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inst_id")
+  labs_equipments labs_equipments[]
+  users_labs      users_labs[]
+}
+
+model users_labs {
+  id      Int   @id @default(autoincrement())
+  user_id Int
+  lab_id  Int
+  labs    labs  @relation(fields: [lab_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lab_id")
+  users   users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_id")
+
+  @@unique([user_id, lab_id], map: "unique_user_lab")
+}
+
+model equipments {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(40)
+  status          String?           @default("available") @db.VarChar(20)
+  labs_equipments labs_equipments[]
+}
+
+model labs_equipments {
+  id           Int        @id @default(autoincrement())
+  lab_id       Int
+  equipment_id Int
+  equipments   equipments @relation(fields: [equipment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_eq_id")
+  labs         labs       @relation(fields: [lab_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lab_id")
 }
